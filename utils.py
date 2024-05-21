@@ -51,18 +51,15 @@ async def data_aggregate(dt_from: datetime, dt_upto: datetime, group_type: str) 
         grouping = {'year': {'$year': '$dt'}, 'month': {'$month': '$dt'},
                     'day': {'$dayOfYear': '$dt'}, 'hour': {'$hour': '$dt'}}
         date_format = "%Y-%m-%dT%H:00:00"
-        label = {'$first': {'$dateToString': {'format': date_format, 'date': '$dt'}}}
     elif group_type == 'day':
         grouping = {'year': {'$year': '$dt'}, 'day': {'$dayOfYear': '$dt'}}
         date_format = "%Y-%m-%dT00:00:00"
-        label = {'$first': {'$dateToString': {'format': date_format, 'date': '$dt'}}}
     elif group_type == 'week':
         grouping = {'year': {'$isoWeekYear': '$dt'}, 'week': {'$isoWeek': '$dt'}}
         date_format = "%Y-%m-%dT00:00:00"
     else:
         grouping = {'year': {'$year': '$dt'}, 'month': {'$month': '$dt'}}
         date_format = "%Y-%m-01T00:00:00"
-        label = {'$first': {'$dateToString': {'format': date_format, 'date': '$dt'}}}
 
     pipeline = [
         {'$match': {
@@ -112,6 +109,4 @@ async def combine_data(msg: str) -> dict:
     aggregate_result = await data_aggregate(msg_dict['dt_from'], msg_dict['dt_upto'], msg_dict['group_type'])
     labels = generate_time_labels(msg_dict['dt_from'], msg_dict['dt_upto'], msg_dict['group_type'])
     dataset = [aggregate_result.get(label, 0) for label in labels]
-
     return {'dataset': dataset, 'labels': labels}
-

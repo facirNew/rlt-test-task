@@ -2,7 +2,6 @@ import json
 
 from aiogram import Router
 from aiogram.types import Message
-from json import JSONDecodeError
 
 from utils import combine_data
 
