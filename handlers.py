@@ -1,3 +1,5 @@
+import json
+
 from aiogram import Router
 from aiogram.types import Message
 from json import JSONDecodeError
@@ -14,4 +16,4 @@ async def message_handler(msg: Message) -> None:
     if 'error' in result:
         await msg.answer(str(result['error']))
         return
-    await msg.answer(str(result))
+    await msg.answer(json.dumps(result))
